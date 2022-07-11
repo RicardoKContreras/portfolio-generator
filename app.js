@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
-
+const { writeFile, copyFile } = require('./utils/generate-site.js'); //shorthand from this:
+//const generateSite = require('./utils/generate-site.js');
 const promptUser = () => {
   return inquirer.prompt([ 
       {
@@ -140,16 +141,45 @@ const promptUser = () => {
    promptUser()
    .then(promptProject)
    .then(portfolioData => {
-    console.log(portfolioData);
+    return generatePage(portfolioData);
+// gives data into profileDataArgs as an array
+   })
+   .then(pageHTML => {
+    return writeFile(pageHTML);
+   })
+   .then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+   })
+   .then(copyFileResponse => {
+    console.log(copyFileResponse);
+   })
+   .catch(err => {
+    console.log(err);
    });
+
+//This const generates the HTML file we are using
+// changed the path from /index.html to this:
+
+fs.writeFile('./dist/index.html', pageHTML, err => {
+    if (err) {
+        console.log(err);
+        return;
+    }
+console.log(`Page created! Check out index.html in this directory to see it!`);
+
+
+});
+
+    console.log(portfolioData);
    
    
     
 //fs allows us to us file sysyem
-/*const fs = require('fs');
-const generatePage = require('./src/page-template.js');
+
+const generatePage = require('./src/page-template');
 //looks into the process and argv to pull data
-const pageHTML = generatePage(Name, Github);
+/*const pageHTML = generatePage(Name, Github);
 // gives data into profileDataArgs as an array
 
 
